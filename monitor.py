@@ -51,7 +51,7 @@ def main():
         browser = pw.chromium.launch(headless=True)
         page = browser.new_page(locale='en-US')
         page.set_default_timeout(20000)
-        response = page.goto(CATALOG, wait_until='domcontentloaded')
+        response = page.goto(CATALOG, wait_until='load')
         if not response or response.status >= 400:
             raise RuntimeError('Catalog access failed; baseline retained')
         catalog = Catalog(); catalog.feed(page.content())
@@ -60,9 +60,10 @@ def main():
         print(f"Catalog: {len(catalog.items)} products, {len(active)} in stock", flush=True)
         for index, (item, meta) in enumerate(active):
             try:
-                page.goto(meta['url'], wait_until='domcontentloaded')
+                page.goto(meta['url'], wait_until='load')
                 consent = page.get_by_role('button', name='Accept', exact=True)
                 if consent.is_visible(): consent.click()
+                page.wait_for_function("typeof window.orders !== 'undefined' && typeof window.orders.basket === 'function'")
                 page.get_by_role('link', name='Buy', exact=True).click()
                 page.locator('#item_partners li[data-id]').first.wait_for(state='visible')
                 vendors = Vendors(); vendors.feed(page.locator('#item_partners').evaluate('(el) => el.outerHTML'))
@@ -74,16 +75,17 @@ def main():
             except Exception as exc:
                 errors.append({'item':item, 'error':type(exc).__name__, 'detail':str(exc)[:1500]})
                 print(f'Item {item}: {exc}', flush=True)
+                print(page.locator('body').inner_text()[-2500:], flush=True)
                 # Stop after repeated failures rather than hammering a blocked site.
                 if len(errors) >= 3: break
-                page.goto(CATALOG, wait_until='domcontentloaded')
+                page.goto(CATALOG, wait_until='load')
             print(f"Scanned {index + 1}/{len(active)}; errors {len(errors)}", flush=True)
             time.sleep(0.5)
         browser.close()
     directory = Path(os.getenv('STATE_DIR', 'state')); directory.mkdir(exist_ok=True)
     last = directory / 'latest.json'
     old = json.loads(last.read_text()) if last.exists() else None
-    report = {'time':now, 'items':len(catalog.items), 'vendor_rows':len(rows), 'errors':errors}
+    report = {'time':now, 'items':len(catalog.items), 'vendor_rows':len(rows), 'active_items':len(active), 'catalog':catalog.items, 'errors':errors}
     # Only compare and replace baseline when the entire scan succeeded.
     if errors:
         report['status'] = 'incomplete'; report['changes'] = []
@@ -95,6 +97,22 @@ def main():
         report['changes'] = changes(old['rows'], rows) if old else []
         report['baseline'] = old is None
         last.write_text(json.dumps({'time':now,'items':len(catalog.items),'rows':rows}, indent=2))
+    lines = ["# Softreg stok raporu", "", f"Ölçüm başlangıcı (UTC): {now}", "",
+             f"Katalog: {len(catalog.items)} ürün; stoklu: {len(active)}; okunan satıcı satırı: {len(rows)}; hata: {len(errors)}.", "",
+             "Stok azalması kesin satış anlamına gelmez. Görünmeyen satıcı, sıfır stok olarak yorumlanmaz.", "",
+             "## Değişiklikler", ""]
+    if not old: lines.append("İlk tam ölçüm karşılaştırma için başlangıç kaydıdır.")
+    if errors: lines.append("Eksik tarama: önceki tam kayıt korundu; değişiklik hesabı yapılmadı.")
+    for delta in report['changes']:
+        before, after = delta.get('old'), delta.get('new')
+        def describe(value):
+            return f"{value['stock']} adet / ${value['price']}" if value else "görünmüyor"
+        lines.append(f"- {delta['key']}: {describe(before)} → {describe(after)}")
+    lines += ["", "## Okunan satıcılar", "", "| Ürün | Partner | Stok | Alıcı fiyatı (USD) |", "|---|---|---:|---:|"]
+    for key, row in sorted(rows.items()):
+        item, partner = key.split(':')
+        lines.append(f"| [{item}]({row['url']}) | {partner} | {row['stock']} | {row['price']} |")
+    (directory / 'REPORT.md').write_text('\n'.join(lines) + '\n')
     (directory / 'report.json').write_text(json.dumps(report, indent=2))
     with (directory / 'history.jsonl').open('a') as stream:
         stream.write(json.dumps(report) + '\n')
