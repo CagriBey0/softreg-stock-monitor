@@ -60,7 +60,10 @@ def main():
         print(f"Catalog: {len(catalog.items)} products, {len(active)} in stock", flush=True)
         for index, (item, meta) in enumerate(active):
             try:
-                page.locator('button.basket-button[data-id="' + item + '"]').click()
+                page.goto(meta['url'], wait_until='domcontentloaded')
+                consent = page.get_by_role('button', name='Accept', exact=True)
+                if consent.is_visible(): consent.click()
+                page.get_by_role('link', name='Buy', exact=True).click()
                 page.locator('#item_partners li[data-id]').first.wait_for(state='visible')
                 vendors = Vendors(); vendors.feed(page.locator('#item_partners').evaluate('(el) => el.outerHTML'))
                 if not vendors.rows: raise ValueError('No vendor rows parsed')
@@ -69,7 +72,8 @@ def main():
                 page.keyboard.press('Escape')
                 page.locator('#item_partners').wait_for(state='hidden')
             except Exception as exc:
-                errors.append({'item':item, 'error':type(exc).__name__})
+                errors.append({'item':item, 'error':type(exc).__name__, 'detail':str(exc)[:1500]})
+                print(f'Item {item}: {exc}', flush=True)
                 # Stop after repeated failures rather than hammering a blocked site.
                 if len(errors) >= 3: break
                 page.goto(CATALOG, wait_until='domcontentloaded')
@@ -83,6 +87,7 @@ def main():
     # Only compare and replace baseline when the entire scan succeeded.
     if errors:
         report['status'] = 'incomplete'; report['changes'] = []
+        report['partial_rows'] = rows
     else:
         if old and len(catalog.items) < old['items'] * 0.8:
             raise RuntimeError('Catalog shrank by over 20%; manual review needed; baseline retained')
