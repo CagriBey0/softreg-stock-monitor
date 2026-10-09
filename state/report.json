@@ -1,0 +1,21 @@
+{
+  "time": "2026-10-09T15:17:22.711236+00:00",
+  "items": 347,
+  "vendor_rows": 24,
+  "errors": [
+    {
+      "item": "3249",
+      "error": "TimeoutError"
+    },
+    {
+      "item": "30723",
+      "error": "TimeoutError"
+    },
+    {
+      "item": "31848",
+      "error": "TimeoutError"
+    }
+  ],
+  "status": "incomplete",
+  "changes": []
+}
