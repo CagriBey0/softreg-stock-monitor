@@ -60,27 +60,33 @@ def main():
         print(f"Catalog: {len(catalog.items)} products, {len(active)} in stock", flush=True)
         for index, (item, meta) in enumerate(active):
             try:
-                page.goto(meta['url'], wait_until='load')
+                page.wait_for_function("typeof window.orders !== 'undefined' && typeof window.orders.basket === 'function'")
                 consent = page.get_by_role('button', name='Accept', exact=True)
                 if consent.is_visible(): consent.click()
-                page.wait_for_function("typeof window.orders !== 'undefined' && typeof window.orders.basket === 'function'")
-                page.get_by_role('link', name='Buy', exact=True).click()
-                page.locator('#item_partners li[data-id]').first.wait_for(state='visible')
-                vendors = Vendors(); vendors.feed(page.locator('#item_partners').evaluate('(el) => el.outerHTML'))
-                if not vendors.rows: raise ValueError('No vendor rows parsed')
+                with page.expect_response(lambda response: '/req/deferred.php' in response.url and 'buy_dialog' in (response.request.post_data or '')) as result:
+                    page.locator('button.basket-button[data-id="' + item + '"]').click()
+                response = result.value
+                if response.status != 200:
+                    raise RuntimeError(f'Vendor request HTTP {response.status}; stopping')
+                payload = response.json()
+                if payload.get('code') != 0:
+                    raise RuntimeError('Vendor response rejected: ' + str(payload.get('errormsg', payload.get('code'))))
+                vendors = Vendors(); vendors.feed(payload.get('content', ''))
+                if not vendors.rows: raise ValueError('Successful response had no vendor rows')
                 for pid, value in vendors.rows.items():
                     rows[item + ':' + pid] = dict(value, url=meta['url'])
+                page.locator('#buy_dialog').wait_for(state='visible')
                 page.keyboard.press('Escape')
-                page.locator('#item_partners').wait_for(state='hidden')
+                page.locator('#buy_dialog').wait_for(state='hidden')
             except Exception as exc:
                 errors.append({'item':item, 'error':type(exc).__name__, 'detail':str(exc)[:1500]})
                 print(f'Item {item}: {exc}', flush=True)
                 print(page.locator('body').inner_text()[-2500:], flush=True)
                 # Stop after repeated failures rather than hammering a blocked site.
-                if len(errors) >= 3: break
+                if isinstance(exc, RuntimeError) or len(errors) >= 3: break
                 page.goto(CATALOG, wait_until='load')
             print(f"Scanned {index + 1}/{len(active)}; errors {len(errors)}", flush=True)
-            time.sleep(0.5)
+            time.sleep(2)
         browser.close()
     directory = Path(os.getenv('STATE_DIR', 'state')); directory.mkdir(exist_ok=True)
     last = directory / 'latest.json'
