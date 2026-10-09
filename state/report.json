@@ -1,7 +1,7 @@
 {
-  "time": "2026-10-09T15:57:13.517459+00:00",
+  "time": "2026-10-09T16:00:47.754345+00:00",
   "items": 347,
-  "vendor_rows": 4,
+  "vendor_rows": 24,
   "active_items": 79,
   "catalog": {
     "32505": {
@@ -1395,19 +1395,19 @@
   },
   "errors": [
     {
-      "item": "32646",
-      "error": "TimeoutError",
-      "detail": "Locator.wait_for: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#item_partners li[data-id]\").first to be visible\n"
+      "item": "3249",
+      "error": "JSONDecodeError",
+      "detail": "Expecting value: line 1 column 1 (char 0)"
     },
     {
-      "item": "32419",
+      "item": "30723",
       "error": "TimeoutError",
-      "detail": "Locator.wait_for: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#item_partners li[data-id]\").first to be visible\n"
+      "detail": "Page.wait_for_function: Timeout 20000ms exceeded."
     },
     {
-      "item": "31010",
+      "item": "31848",
       "error": "TimeoutError",
-      "detail": "Locator.wait_for: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#item_partners li[data-id]\").first to be visible\n"
+      "detail": "Page.wait_for_function: Timeout 20000ms exceeded."
     }
   ],
   "status": "incomplete",
@@ -1418,10 +1418,20 @@
       "price": 0.259,
       "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirmed-via-sms-phone-number-is-not-included-in-profile-security-method-confirm-email-included-without-password-registered-with-mix-ip-32505"
     },
+    "32646:2594": {
+      "stock": 64,
+      "price": 0.426,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-require-confirmation-via-sms-phone-number-is-not-included-in-profile-security-method-confirm-email-not-included-registered-with-mix-ip-32646"
+    },
     "32079:2866": {
       "stock": 290,
       "price": 0.463,
       "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-may-require-confirmation-via-sms-phone-number-is-not-included-in-profile-security-method-confirm-email-included-may-not-work-does-not-affect-the-operation-of-the-main-account-regis-32079"
+    },
+    "32419:2870": {
+      "stock": 261,
+      "price": 0.463,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-require-confirmation-via-sms-confirm-email-not-included-registered-with-mix-ip"
     },
     "32437:2736": {
       "stock": 86,
@@ -1432,6 +1442,96 @@
       "stock": 658,
       "price": 0.479,
       "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-require-confirmation-via-sms-confirm-email-included-without-password-registered-with-usa-ip"
+    },
+    "31010:2736": {
+      "stock": 237,
+      "price": 0.555,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-may-require-confirmation-via-sms-phone-number-is-not-included-in-profile-security-method-confirm-email-not-included-registered-with-mix-ip-31010"
+    },
+    "31803:1741": {
+      "stock": 167,
+      "price": 0.555,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirmed-via-sms-phone-number-is-not-included-in-profile-security-method-confirm-email-not-included-registered-with-mix-ip-31803"
+    },
+    "31803:2937": {
+      "stock": 487,
+      "price": 0.74,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirmed-via-sms-phone-number-is-not-included-in-profile-security-method-confirm-email-not-included-registered-with-mix-ip-31803"
+    },
+    "32418:2870": {
+      "stock": 1582,
+      "price": 0.555,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirmed-via-sms-confirm-email-not-included-registered-with-mix-ip-32418"
+    },
+    "31835:2679": {
+      "stock": 20,
+      "price": 0.592,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirm-email-not-included-2fa-is-included-in-set-registered-with-india-ip-31835"
+    },
+    "32030:2850": {
+      "stock": 92,
+      "price": 0.592,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirmed-via-sms-confirm-email-not-included-registered-with-mix-ip-32030"
+    },
+    "32030:1216": {
+      "stock": 76,
+      "price": 1.65,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirmed-via-sms-confirm-email-not-included-registered-with-mix-ip-32030"
+    },
+    "30969:2454": {
+      "stock": 101,
+      "price": 0.648,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirm-email-not-included-registered-with-mix-ip-30969"
+    },
+    "30969:1918": {
+      "stock": 30,
+      "price": 0.925,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirm-email-not-included-registered-with-mix-ip-30969"
+    },
+    "31845:2930": {
+      "stock": 12,
+      "price": 0.648,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-may-require-confirmation-via-sms-confirm-email-not-included-registered-with-usa-ip-31845"
+    },
+    "31845:2886": {
+      "stock": 32,
+      "price": 0.925,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-may-require-confirmation-via-sms-confirm-email-not-included-registered-with-usa-ip-31845"
+    },
+    "31736:2787": {
+      "stock": 49,
+      "price": 0.685,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirm-email-not-included-registered-with-usa-ip-31736"
+    },
+    "32461:2564": {
+      "stock": 23,
+      "price": 0.703,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirm-email-not-included-registered-with-mix-ip-32461"
+    },
+    "31922:2886": {
+      "stock": 73,
+      "price": 0.74,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-may-require-confirmation-via-sms-confirm-email-not-included-registered-with-usa-ip-31922"
+    },
+    "32022:2826": {
+      "stock": 37,
+      "price": 0.74,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirm-email-not-included-registered-with-mix-ip-32022"
+    },
+    "32022:1830": {
+      "stock": 717,
+      "price": 0.925,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirm-email-not-included-registered-with-mix-ip-32022"
+    },
+    "32195:2930": {
+      "stock": 17,
+      "price": 0.74,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-may-require-confirmation-via-sms-confirm-email-not-included-registered-with-usa-ip-32195"
+    },
+    "31450:2839": {
+      "stock": 114,
+      "price": 0.777,
+      "url": "https://www.accsmarket.com/en/item/gmail-accounts--mix-confirmed-via-sms-phone-number-is-not-included-in-profile-security-method-confirm-email-not-included-registered-with-mix-ip-31450"
     }
   }
 }
